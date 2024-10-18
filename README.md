@@ -1,4 +1,4 @@
-<img align="right" width="250" height="47" src="images/gematik_logo.png"/> <br/> 
+<img src="images/gematik_logo.png" alt="gematik logo" width="150" style="float: right"/>
   
 # gematik Push Notification Concept
 
