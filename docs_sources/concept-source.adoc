@@ -1,0 +1,55 @@
+= Notification Management image:gematik_logo.png[width=150, float="right"]
+include::./config-source.adoc[]
+
+toc::[]
+
+== Konzept
+=== Architektur
+An der Umsetzung des Notification Managements sind folgende Komponenten und Services beteiligt:
+
+image:services-landscape.png[width=50%]
+
+•	Push Notification Service: Der Service im ePA-Aktensystem zur Verwaltung der Push-Notifications. Der Service erstellt Push- Notifications für abonnierte Ereignisse und übermittelt diese an das zuständige Push Gateway. Der Push Notification Service bietet Schnittstellen für Versicherte/Vertreter zur Registrierung und Konfiguration von Pushern. Ein Pusher bezieht sich auf eine ePA-FdV-Instanz und ist eine Konfiguration im Aktensystem, in der die Informationen zur Adressierung der Push- Notifications hinterlegt werden (u.a. das zu nutzende Push Gateway, Schlüssel zur Verschlüsselung von Nachrichteninhalten). Der Kontoinhaber kann für beliebig viele Endgeräte Pusher in seinem Konto hinterlegen. Genauso kann ein Vertreter beliebig viele Pusher für das Konto des Versicherten hinterlegen.
+
+image:kontos.png[width=50%]
+
+•	Push Gateway: Das Push Gateway besitzt einen anwendungsübergreifenden Endpunkt, an den Push-Notifications übermittelt werden. Das Push Gateway leitet die Informationen der Push- Notification an den Push Provider.  Das Push Gateway wird vom Hersteller des ePA-FdV bereitgestellt.
+•	Push Provider: Der Push Provider ist ein Service des Herstellers des mobilen Betriebssystems. Der Push Provider sendet Notifications an App-Instanzen auf Endgeräten der Nutzer. 
+•	ePA-FdV-Instanz: Die ePA-FdV-Instanz ist ein auf einem mobilen Endgerät installiertes ePA-FdV.  Push- Notifications werden für eine ePA-FdV-Instanz registriert und an diese ePA-FdV-Instanz gesendet.  
+Die Verbindungen zwischen Push Gateway und Aktensystem sind beidseitig authentisiert und verschlüsselt.  
+
+=== Registrierung einer ePA-FdV-Instanz 
+Damit eine ePA-FdV-Instanz Push-Notifications empfangen kann, muss diese zunächst beim Push-Provider sowie im Aktensystem registriert werden.
+
+image:push-notification-registration.png[width=50%]
+
+1.	Die ePA-FdV-Instanz registriert sich am Push Provider und erhält ein App Token, welches die ePA-FdV-Instanz eindeutig identifiziert. 
+2.	In der ePA-FdV-Instanz wird ein asymmetrisches Schlüsselpaar (push_pubK, push_privK) generiert und im Endgerät sicher gespeichert.
+3.	Der Nutzer meldet sich am Aktensystem an und registriert die ePA-FdV-Instanz am Push Notification Service für ein Aktenkonto als einen Pusher. Teil der Registrierungsdaten sind das App Token, die app_id, die Adresse des Push Gateways sowie der öffentliche Schlüssel push_pubK. Die app_id und die Adresse des Push Gateways sind im ePA-FdV durch den Hersteller hinterlegt worden.
+
+=== Versenden von Push-Notifications
+Die folgende Abbildung veranschaulicht den Ablauf, wenn ein Ereignis in einem Konto eintritt, für welches Push-Benachrichtigungen gesendet werden sollen (z.B. wenn ein Nutzer ein neues Dokument einstellt):  
+
+image:push-notification-send.png[width=50%]
+
+1.	Der Push Notification Service des Aktensystems führt folgende Schritte durch  
+a.	Generieren einer eindeutigen EventID
+b.	Erzeugen des Nachrichteninhalts = („ePA“, Kontonummer, EventDetails). Die EventDetails sind spezifisch für das Event. Da das ePA-FdV Push-Benachrichtigungen von mehreren Anwendungen erhalten kann, signalisiert der konstante Wert „ePA“ dem ePA-FdV in Schritt 6, dass es sich um eine Push-Benachrichtigung bzgl. der Anwendung ePA handelt. Die Kontonummer wird aufgenommen, da auch Vertreter Push-Notifications für das Konto der zu vertretenden Versicherten erhalten können und sie in der Push-Notification erkennen können müssen, auf welches Konto sich die Benachrichtigung bezieht.  Dem Nachrichteninhalt wird zur Verschleierung der Länge der Nachricht ein Zufallswert ergänzt (Encoding).
+c.	Das Paar (EventID, Nachrichteninhalt) wird verschlüsselt im Aktensystem persistiert.
+2.	Für jeden im Aktenkonto registrierten Pusher p, der für das Ereignis abonniert ist, wird eine Push-Benachrichtigung Norification_p mit folgenden Inhalten erzeugt:
+a.	content = Nachrichteninhalt aus 1b verschlüsselt mit dem push_pubK des Pushers p. Das Chiffrat wird mit „ePA“ gekennzeichnet. Dies erlaubt dem Push Gateway eine Priorisierung nach Anwendungen. 
+b.	devices = (app_id, App Token)
+c.	event_id = EventID
+3.	Für jeden Pusher p wird die Push-Benachrichtigung Notification_p an das Push Gateways des Pushers p übermittelt.
+4.	Das Push Gateway entfernt in der erhaltenen Notification_p die Kennzeichnung „ePA“ am Chiffrat des Nachrichteninhalts und übermittelt die angepasste Push-Benachrichtigung Notification‘_p an den Push Provider.
+5.	Der Push-Provider sendet die Notification an die zum App Token gehörende ePA-FdV-Instanz.
+6.	Die ePA-FdV-Instanz entschlüsselt den Nachrichteninhalt mit dem privaten Schlüssel push_privK und zeigt dem Nutzer den Nachrichteninhalt geeignet an. 
+Bei Bedarf kann sich der Nutzer am Aktenkonto anmelden, um sich z.B. ein eingestelltes Dokument anzusehen.
+
+== Zugriff auf Push-Notifications im Aktensystem
+Die Nachrichteninhalte der Push-Benachrichtigungen werden im Aktensystem verschlüsselt gespeichert (vgl. Schritt 1c im Abschnitt „Versenden von Push-Notifications“). Dies erfolgt aus mehreren Gründen:
+•	Es ist nicht garantiert, dass jede Push-Notification an der ePA-FdV-Instanz ankommt. 
+•	Der Nutzer soll die Möglichkeit haben, Push-Notifications auch noch lesen zu können, wenn sie in der ePA-FdV-Instanz gelöscht wurden.
+•	Der Nutzer soll die Möglichkeit haben, Push-Notifications auch von Endgeräten zu lesen, die nicht für Push-Notifications registriert wurden (z.B. Desktop FdV).
+Die Verschlüsselung im Aktensystem erfolgt mit einem aktenindividuellen Schlüssel, der nur über eine VAU zugreifbar ist.
+Die Benachrichtigungen werden nach 3 Monaten automatisch im Aktensystem gelöscht.
