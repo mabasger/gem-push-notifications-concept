@@ -1,6 +1,4 @@
-<img src="images/gematik_logo.png" alt="gematik logo" width="150" style="float: right"/>
-  
-# gematik Push Notification Concept
+# gematik Push Notification Concept <img src="images/gematik_logo.png" alt="gematik logo" width="150" style="float: right"/>
 
 <details>
   <summary>Table of Contents</summary>
@@ -16,7 +14,7 @@
 ## About The Project
 This repository contains the gematik concept for push notifications.
 
-The concept can be found [here](docs/concept.adoc)
+The concept can be found [here](docs/concept.adoc).
 
 ## License
 This project is licensed under the Apache 2.0 license.
