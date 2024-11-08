@@ -1,0 +1,25 @@
+@startuml Enties
+
+entity Konto {}
+
+entity Inhaber {}
+
+entity Pusher {}
+
+entity Vertreter {}
+
+entity Fachdienst {}
+
+entity "Push Gateway" as PushGateway {}
+
+Konto -down- "1  " Inhaber
+Inhaber "1  " -right- "*" Pusher
+Konto -down- Vertreter
+Vertreter -- "*" Pusher
+
+Inhaber -left[hidden]- Vertreter
+
+Pusher "1" -right- "1" Fachdienst
+Fachdienst "*" -right- "*" PushGateway
+
+@enduml

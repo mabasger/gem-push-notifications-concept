@@ -1,0 +1,30 @@
+@startuml Registration
+
+actor "FdV" as App
+entity "FD (EPA/TIM/ERP)" as Fachdienst
+entity "Push Gateway" as NotificationService
+entity "Apple/Google" as NotificationProvider
+
+group SendPush
+    Fachdienst -> Fachdienst : event_trigger
+    activate Fachdienst
+    Fachdienst -> Fachdienst : encrypt_message
+    Fachdienst -> NotificationService : send_push(\n\tapp_id,\n\tpush_token,\n\tpayload,\n\tpusher\n)
+    activate NotificationService
+    NotificationService -->> Fachdienst : status
+    deactivate Fachdienst
+    NotificationService -> NotificationProvider : send_push push_token, payload
+    deactivate NotificationService
+
+    activate NotificationProvider
+    NotificationProvider -> App : push
+    deactivate NotificationProvider
+
+    activate App
+    App -> App : decrypt_notification
+    App -> App : show_notification
+    deactivate App
+
+end
+
+@enduml
