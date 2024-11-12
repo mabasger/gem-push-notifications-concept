@@ -1,0 +1,37 @@
+@startuml Enties
+
+' cloud "Apple/Google" {
+'     entity "Push Provider" as PushProvider {}
+' }
+
+cloud "Apple/Google" {
+    component "Push Provider" as PushProvider
+}
+
+package "App Developer" {
+    component "Push Gateway" as PushGateway
+    component MobileDevice
+}
+
+
+
+PushGateway -left-> PushProvider
+
+MobileDevice <-up.> PushProvider
+' MobileDevice "PushToken" <- PushProvider
+
+PushGateway -[hidden]-- MobileDevice
+
+component Fachdienst
+
+Fachdienst <-- MobileDevice : Register 
+Fachdienst -> PushGateway : Send Push
+
+component Fachdienst2
+
+Fachdienst -[hidden]-- Fachdienst2
+
+Fachdienst2 <-- MobileDevice : Register
+Fachdienst2 -> PushGateway : Send Push
+
+@enduml
