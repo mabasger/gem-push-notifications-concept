@@ -1,0 +1,171 @@
+|===
+|Channel|Aktion |Beschreibung |Anforderungstyp |technische Identifier
+
+|
+|XDS Document Service
+|Dokument eingestellt durch LEI oder Vertreter
+|MUSS
+|
+
+|
+|Dokument gelesen durch LEI oder Vertreter
+|Dokument gelöscht durch LEI oder Vertreter
+|MUSS
+|
+
+|
+|Dokument aktualisiert durch LEI oder Vertreter
+|Metadaten geändert durch LEI oder Vertreter
+|MUSS
+|
+
+|
+|dgMP (Akteuer nicht vollständig)
+|Verschreibungsdaten einstellen (E-Rezept-Fachdienst)
+|KANN
+|
+
+|
+|Verschreibungsdaten stornieren (E-Rezept-Fachdienst)
+|Dispensierinformationen einstellen (E-Rezept-Fachdienst)
+|KANN
+|
+
+|
+|Dispensierung stornieren (E-Rezept-Fachdienst)
+|Dispensierinformationen einstellen (Clientsysteme)
+|KANN
+|
+
+|
+|Dispensierung stornieren (Clientsysteme)
+|Medikationsliste abrufen durch Vertreter oder PVS
+|KANN
+|
+
+|
+|AMTS-rZI Allergien und Intoleranzen hinzufügen
+|AMTS-rZI Allergien und Intoleranzen aktualisieren
+|KANN
+|
+
+|
+|AMTS-rZI Beobachtungen hinzufügen
+|AMTS-rZI Beobachtung kommentieren
+|KANN
+|
+
+|
+|AMTS-rZI Beobachtung invalidieren
+|Medikament hinzufügen
+|KANN
+|
+
+|
+|Eingegebenes Medikament invalidieren
+|Medikamentzusatzinformationen hinzufügen
+|KANN
+|
+
+|
+|Medikamentzusatzinformationen aktualisieren
+|Medikament ersetzen
+|KANN
+|
+
+|
+|Medikationsplanungsdaten mit Verschreibungsdaten verlinken
+|Verlinkung zwischen Medikationsplanungsdaten und Verschreibungsdaten aufheben
+|KANN
+|
+
+|
+|Medikationsplan abrufen
+|Medikationsplan verwalten
+|KANN
+|
+
+|
+|Übergreifenden Hinweis für Medikationsplan hinzufügen
+|Übergreifende Hinweise für Medikationsplan entfernen
+|KANN
+|
+
+|
+|Medikationsplanhistorie abrufen
+|Verifizieren des aktuell gültigen Medikationsplans
+|KANN
+|
+
+|
+|Befugnisse
+|Befugnis durch Vertreter erteilt
+|KANN
+|
+
+|
+|Befugnis durch Vertreter gelöscht
+|Befugnis in der ärzlichen Versorgung erteilt
+|KANN
+|
+
+|
+|Widersprüche
+|Widerspruch erteilt durch Vertreter oder Ombudstelle
+|KANN
+|
+
+|
+|Widerspruch zurückgenommen durch Vertreter oder Ombudstelle
+|Einschränkung der Verwendung von Daten auf bestimmte Sekundärnutzungszwecke geändert
+|KANN
+|
+
+|
+|Widerspruch gegen die Nutzung der ePA durch eine spezifische LEI erteilt durch Vertreter oder Ombudstelle
+|Widerspruch gegen die Nutzung der ePA durch eine spezifische LEI zurückgenommen durch Vertreter oder Ombudstelle
+|KANN
+|
+
+|
+|Widerspruch gegen die Nutzung dgMP durch eine spezifische LEI erteilt
+|Widerspruch gegen die Nutzung dgMP durch eine spezifische LEI zurückgenommen
+|KANN
+|
+
+|
+|Constraint Management
+|Dokument verborgen durch Vertreter
+|KANN
+|
+
+|
+|Verborgenes Dokument durch Vertreter wieder sichtbar
+|Kategorie verborgen durch Vertreter
+|KANN
+|
+
+|
+|Kategorie durch Vertreter wieder sichtbar
+|Ordner verborgen durch Vertreter
+|KANN
+|
+
+|
+|Ordner durch Vertreter wieder sichtbar
+|Sicherheit
+|KANN
+|
+
+|
+|Loginversuch gescheitert
+|Protokollierung
+|KANN
+|
+
+|
+|Protokolldaten abgerufen durch Vertreter oder Ombudstelle
+|Aktenumzug
+|KANN
+|
+|===
