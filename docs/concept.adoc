@@ -48,7 +48,7 @@ Der Push Provider ist ein Service des Herstellers des mobilen Betriebssystems (z
 
 ==== FdV Instanz image:{Status_InReview}[]
 
-Die FdV-Instanz ist ein auf einem mobilen Endgerät installiertes FdV.  Push-Notifications werden für eine FdV-Instanz registriert und an diese gesendet.  Die FdV-Instanz kann mehrere Anwendungen integrieren (ePA, E-Rezept, TI-Messenger, Kassenanwendungen), für die der Versicherte jeweils Push Notifications auswählen kann. 
+Die FdV-Instanz ist ein auf einem mobilen Endgerät installiertes FdV.  Push-Notifications werden für eine FdV-Instanz registriert und an diese gesendet.  Die FdV-Instanz kann mehrere Anwendungen integrieren (ePA, E-Rezept, TI-Messenger, Kassenanwendungen), für die der Versicherte jeweils Push Notifications auswählen kann.
 
 === Authentisierung image:{Status_InReview}[]
 
@@ -58,15 +58,19 @@ image::diagrams/push_overview_authentication.png[width=50%]
 
 Die Verbindungen zwischen Push Gateway und den Fachdiensten sind beidseitig authentisiert und verschlüsselt.
 
-Die Verbindungen zwischen Push Gateway und die Fachdiensten sind beidseitig authentisiert und verschlüsselt.
+Die Verbindungen zwischen Push Gateway und den Fachdiensten sind beidseitig authentisiert und verschlüsselt.
 Die anderen sind Fachdienst oder Push-Provider spezifisch.
 
 === Verschlüsselung des Benachrichtigungsinhaltes image:{Status_Draft}[]
 
 Der Benachrichtigungsinhalt einer jeden Benachrichtigung wird mittels eines Authenticated-Encryption-Verfahrens verschlüsselt (AES/GCM), sodass der Inhalt der Benachrichtigung nicht von Dritten eingesehen oder veränderten werden kann.
+
 Wenn sich eine FdV-Installation beim Fachdienst für Benachrichtigungen registriert (vgl. Abschnitt 4.6.1), erzeugt die App ein initiales gemeinsames Geheimnis (`initial-shared-secret` (`ISS`)) und überträgt dieses kryptographisch gesichert an den Fachdienst.
-Dieses gemeinsame Geheimnis ist die Grundlage der kryptographischen Sicherung des Benachrichtigungsinhaltes. Die Benachrichtigung wird vom Fachdienst mit verschlüsseltem Benachrichtigungsinhalt über den Push Provider an die FdV-Installation übermittelt.
+
+Dieses gemeinsame Geheimnis ist die Grundlage der kryptographischen Sicherung des Benachrichtigungsinhaltes. Die Benachrichtigung wird vom Fachdienst mit verschlüsseltem Benachrichtigungsinhalt über das Push Gateway und den Push Provider an die FdV-Installation übermittelt.
+
 Ganz ähnlich wie bei vielen Messaging-Anwendungen werden die verwendeten Schlüssel für die kryptographische Absicherung der Nachrichten regelmäßig gewechselt auf eine Weise, dass eine Wiederherstellbarkeit von alten Schlüssel kryptographisch ausgeschlossen ist.
+
 Der Fachdienst erhält ein ISS und einen Zeitstempel von dessen Erzeugung von dem FdV bei der Registrierung. Mittels einer "Hashed Message Authentication Code (HMAC)-based key derivation function" (HKDF) [RFC-5869] werden per `HKDF(ISS, info="<Jahr>-<Monat>")` zwei Werte abgeleitet:
 
   - Ein Geheimnis für den Monat und Jahr des Zeitstempels (`shared-secret-Jahr-Monat`)
