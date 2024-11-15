@@ -98,7 +98,7 @@ image::diagrams/registration.png[width=50%]
 
 1. Die FdV-Instanz registriert sich beim Push Provider und erhält ein push_token, das die FdV-Instanz eindeutig identifiziert.
 2. Die FdV-Instanz erzeugt ein initial_shared_secret und speichert den Zeitpunkt (<Jahr>-<Monat>) zu welchem dieses erzeugt wurde als time_iss_created
-3. Der Nutzer meldet sich beim Fachdienst (z.B. Aktensystem) an und registriert die FdV-Instanz als Pusher. Teil der Registrierungsdaten sind: {
+3. Der Nutzer meldet sich beim Fachdienst (z.B. Aktensystem) an und registriert einen Pusher. Teil der Registrierungsdaten sind: {
     - das push_token,
     - die app_id,
     - die Art des Pushers (normalerweise "http"),
@@ -109,7 +109,7 @@ image::diagrams/registration.png[width=50%]
 Die genauen Felder und Erklärungen dazu sind auf der OpenAPI-Seite zu finden. Die app_id und die Adresse des Push Gateways wurden vom Hersteller im FdV hinterlegt.
 4. Die FdV-Instanz und der Fachdienst erzeugen den ersten Schlüssel aus dem initial_shared_secret und dem time_iss_created. Anschließend löschen sie das initial_shared_secret.
 
-Möchte der Versicherte Push Notifications von mehreren Fachdiensten erhalten, wird die FdV-Instanz in jedem dieser Fachdienste als Pusher registriert.
+Möchte der Versicherte Push Notifications von mehreren Fachdiensten erhalten, wird durch die FdV-Instanz in jedem dieser Fachdienste ein Pusher registriert.
 
 [code,json]
 .Registrierung einer FdV-Instanz für Push-Notifications im Push-Provider
@@ -145,7 +145,7 @@ Die folgende Abbildung veranschaulicht den Ablauf, wenn ein Ereignis in einem Fa
 image::diagrams/send_push.png[width=50%]
 
 1. Der Fachdienst führt folgende Schritte durch
-    a. Erzeugen des Nachrichteninhalts für dieses spezifisches Ereignis. Die Strukturierung ist fachdienstspezifisch.
+    a. Erzeugen des Nachrichteninhalts für dieses spezifische Ereignis. Die Strukturierung ist fachdienstspezifisch.
     b. Erzeugen eines neuen gültigen Schlüssels, wenn kein gültiger vorhanden ist.
 2. Für jeden registrierten Pusher `p`, der für das Ereignis abonniert ist, wird eine Push-Benachrichtigung `Notification_p` mit mindestens folgenden Inhalten erzeugt (Die möglichen Felder und deren Beschreibungen sind auf der OpenAPI-Seite zu finden):
     a. `ciphertext` = Nachrichteninhalt aus 1b, verschlüsselt mit dem aktuell gültigen Schlüssel.
