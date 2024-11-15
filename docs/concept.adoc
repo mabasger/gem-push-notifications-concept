@@ -48,7 +48,7 @@ Der Push Provider ist ein Service des Herstellers des mobilen Betriebssystems (z
 
 ==== FdV Instanz image:{Status_InReview}[]
 
-Die FdV-Instanz ist ein auf einem mobilen Endgerät installiertes FdV.  Push-Notifications werden für eine FdV-Instanz registriert und an diese gesendet.  Die FdV-Instanz kann mehrere Anwendungen integrieren (ePA, E-Rezept, TI-Messenger, Kassenanwendungen), für die der Versicherte jeweils Push Notifications ausgewählen kann. Die FdV-Instanz wird auch als Pusher bezeichnet.
+Die FdV-Instanz ist ein auf einem mobilen Endgerät installiertes FdV.  Push-Notifications werden für eine FdV-Instanz registriert und an diese gesendet.  Die FdV-Instanz kann mehrere Anwendungen integrieren (ePA, E-Rezept, TI-Messenger, Kassenanwendungen), für die der Versicherte jeweils Push Notifications auswählen kann. 
 
 === Authentisierung image:{Status_InReview}[]
 
@@ -56,23 +56,23 @@ Die FdV-Instanz ist ein auf einem mobilen Endgerät installiertes FdV.  Push-Not
 .Authentisierung der beteiligten Komponenten
 image::diagrams/push_overview_authentication.png[width=50%]
 
-Die Verbindungen zwischen Push Gateway und Aktensystem sind beidseitig authentisiert und verschlüsselt.
+Die Verbindungen zwischen Push Gateway und den Fachdiensten sind beidseitig authentisiert und verschlüsselt.
 
-Die Verbindungen zwischen Push Gateway und die Fachdienste sind beidseitig authentisiert und verschlüsselt.
-Die andere sind Fachdienst oder Push-Provider spezifisch.
+Die Verbindungen zwischen Push Gateway und die Fachdiensten sind beidseitig authentisiert und verschlüsselt.
+Die anderen sind Fachdienst oder Push-Provider spezifisch.
 
 === Verschlüsselung des Benachrichtigungsinhaltes image:{Status_Draft}[]
 
 Der Benachrichtigungsinhalt einer jeden Benachrichtigung wird mittels eines Authenticated-Encryption-Verfahrens verschlüsselt (AES/GCM), sodass der Inhalt der Benachrichtigung nicht von Dritten eingesehen oder veränderten werden kann.
-Wenn sich eine E-Rezept-FdV-Installation beim E-Rezept-Fachdienst für Benachrichtigungen registriert (vgl. Abschnitt 4.6.1), erzeugt die App ein initiales gemeinsames Geheimnis (`initial-shared-secret` (`ISS`)) und überträgt dieses kryptographisch gesichert an den E-Rezept-Fachdienst.
-Dieses gemeinsame Geheimnis ist die Grundlage der kryptographischen Sicherung des Benachrichtigungsinhaltes. Die Benachrichtigung wird vom Notification Service mit verschlüsselten Benachrichtigungsinhalt über den Notification Provider an die E-Rezept-FdV-Installation übermittelt.
+Wenn sich eine FdV-Installation beim Fachdienst für Benachrichtigungen registriert (vgl. Abschnitt 4.6.1), erzeugt die App ein initiales gemeinsames Geheimnis (`initial-shared-secret` (`ISS`)) und überträgt dieses kryptographisch gesichert an den Fachdienst.
+Dieses gemeinsame Geheimnis ist die Grundlage der kryptographischen Sicherung des Benachrichtigungsinhaltes. Die Benachrichtigung wird vom Fachdienst mit verschlüsseltem Benachrichtigungsinhalt über den Push Provider an die FdV-Installation übermittelt.
 Ganz ähnlich wie bei vielen Messaging-Anwendungen werden die verwendeten Schlüssel für die kryptographische Absicherung der Nachrichten regelmäßig gewechselt auf eine Weise, dass eine Wiederherstellbarkeit von alten Schlüssel kryptographisch ausgeschlossen ist.
-Der Notification Service erhält ein ISS und einen Zeitstempel von dessen Erzeugung von dem E-Rezept-FdV bei der Registrierung. Mittels einer "Hashed Message Authentication Code (HMAC)-based key derivation function" (HKDF) [RFC-5869] werden per `HKDF(ISS, info="<Jahr>-<Monat>")` zwei Werte abgeleitet:
+Der Fachdienst erhält ein ISS und einen Zeitstempel von dessen Erzeugung von dem FdV bei der Registrierung. Mittels einer "Hashed Message Authentication Code (HMAC)-based key derivation function" (HKDF) [RFC-5869] werden per `HKDF(ISS, info="<Jahr>-<Monat>")` zwei Werte abgeleitet:
 
   - Ein Geheimnis für den Monat und Jahr des Zeitstempels (`shared-secret-Jahr-Monat`)
   - ein AES/GCM-Schlüssel für den Monat und Jahr des Zeitstempels (`AES/GCM-Schlüssel-Jahr-Monat`).
 
-Diese beiden Werte werden im Notification Service sicher gespeichert und das ISS wird im Notification Service gelöscht.
+Diese beiden Werte werden im Fachdienst sicher gespeichert und das ISS wird im Fachdienst gelöscht.
 
 ==== Beispiel für einen Austausch im Oktober 2023: image:{Status_InReview}[]
 
@@ -81,7 +81,7 @@ Soll im Oktober 2023 eine Benachrichtigung kryptographisch gesichert werden, um 
 Alle `shared-secret-Jahr-Monat` und alle AES/GCM-Schlüssel-Jahr-Monat, die älter sind als zwei Monate werden, sowohl im Notification Service als auch im E-Rezept-FdV gelöscht, jedoch niemals das jüngste noch verfügbare (auch wenn es älter als zwei Monate ist).  Der fachliche Hintergrund von "zwei Monaten" ist, dass sichergestellt sein muss, dass falls der E-Rezept-FD die Benachrichtigung Sekunden vor Monatsende erstellt, und diese im E-Rezept-FdV erst nach einigen Sekunden dann im Folgemonat empfangen werden, die Entschlüsselung im E-Rezept-FdV immer noch möglich sein muss.
 Sollte erst im Januar 2024 die nächste Benachrichtigung gesendet werden, so muss die Ableitung für `2023-12` erzeugt werden und darauf basierend anschließend die Ableitung für `2024-01`. Anschließend werden die Ableitungs- und Schlüsseldaten für `2023-11`` gelöscht. Die Schlüsseldaten für `2024-01` werden für die kryptographische Sicherung verwendet.
 
-Somit erreicht man das Ziel, dass bei Kompromittierung eines `AES/GCM-Jahr-Monat-Schlüssels` nicht mehr Benachrichtigungen entschlüsselt werden können, die älter als zwei Monate sind.
+Somit erreicht man das Ziel, dass bei Kompromittierung eines `AES/GCM-Jahr-Monat-Schlüssels` nur die Benachrichtigungen der letzten zwei Monate entschlüsselt werden können.
 
 
 === Registrierung einer ePA-FdV-Instanz image:{Status_InReview}[]
