@@ -144,6 +144,19 @@ Die folgende Abbildung veranschaulicht den Ablauf, wenn ein Ereignis in einem Fa
 .Push-Notification-Versand
 image::diagrams/send_push.png[width=50%]
 
+1. Der Fachdienst führt folgende Schritte durch
+    a. Erzeugen des Nachrichteninhalts für dieses spezifisches Ereignis. Die Strukturierung ist fachdienstspezifisch.
+    b. Erzeugen eines neuen gültigen Schlüssels, wenn kein gültiger vorhanden ist.
+2. Für jeden registrierten Pusher `p`, der für das Ereignis abonniert ist, wird eine Push-Benachrichtigung `Notification_p` mit mindestens folgenden Inhalten erzeugt (Die möglichen Felder und deren Beschreibungen sind auf der OpenAPI-Seite zu finden):
+    a. `ciphertext` = Nachrichteninhalt aus 1b, verschlüsselt mit dem aktuell gültigen Schlüssel.
+    b. `time_message_encrypted` = Zeitpunkt der Verschlüsselung des Nachrichteinhaltes.
+    c. `devices` = (mindestens: app_id, push_token)
+3. Für jeden Pusher p wird die Push-Benachrichtigung `Notification_p` an das Push Gateways des Pushers `p` übermittelt.
+4. Das Push Gateway übermittelt die Push-Benachrichtigung `Notification_p` an den Push Provider.
+5. Der Push-Provider sendet die Notification an die zur `push_token` gehörende FdV-Instanz.
+6. Die FdV-Instanz entschlüsselt den Nachrichteninhalt mit dem aktuell gültigen Schlüssel (erzeugt ihn, wenn er nicht schon vorhanden ist) und zeigt dem Nutzer den Nachrichteninhalt entsprechend an.
+7. Bei Bedarf kann sich der Nutzer anmelden, um sich beispielsweise ein eingestelltes Dokument anzusehen.
+
 == Beispiele image:{Status_Draft}[]
 
 === Event-Trigger
