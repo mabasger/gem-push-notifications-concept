@@ -65,7 +65,7 @@ Die anderen sind Fachdienst oder Push-Provider spezifisch.
 
 Der Benachrichtigungsinhalt einer jeden Benachrichtigung wird mittels eines Authenticated-Encryption-Verfahrens verschlüsselt (AES/GCM), sodass der Inhalt der Benachrichtigung nicht von Dritten eingesehen oder veränderten werden kann.
 
-Wenn sich eine FdV-Installation beim Fachdienst für Benachrichtigungen registriert (vgl. Abschnitt 4.6.1), erzeugt die App ein initiales gemeinsames Geheimnis (`initial-shared-secret` (`ISS`)) und überträgt dieses kryptographisch gesichert an den Fachdienst.
+Wenn sich eine FdV-Installation beim Fachdienst für Benachrichtigungen registriert, erzeugt die App ein initiales gemeinsames Geheimnis (`initial-shared-secret` (`ISS`)) und überträgt dieses kryptographisch gesichert an den Fachdienst.
 
 Dieses gemeinsame Geheimnis ist die Grundlage der kryptographischen Sicherung des Benachrichtigungsinhaltes. Die Benachrichtigung wird vom Fachdienst mit verschlüsseltem Benachrichtigungsinhalt über das Push Gateway und den Push Provider an die FdV-Installation übermittelt.
 
