@@ -14,7 +14,7 @@
 ## About The Project
 This repository contains the gematik concept for push notifications.
 
-The concept can be found [here](docs/concept.adoc).
+The concept along with the OpenAPI documentation can be found [here](https://gematik.github.io/gem-push-notifications-concept/).
 
 ## License
 This project is licensed under the Apache 2.0 license.
